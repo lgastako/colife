@@ -1,6 +1,5 @@
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE LambdaCase    #-}
-{-# LANGUAGE RankNTypes    #-}
 
 module Colife where
 
