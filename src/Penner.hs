@@ -1,8 +1,16 @@
+{-# LANGUAGE FlexibleInstances  #-}
+{-# LANGUAGE InstanceSigs       #-}
+{-# LANGUAGE RankNTypes         #-}
+{-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeFamilies       #-}
+{-# LANGUAGE TypeOperators      #-}
+
 module Penner where
 
 -- From Chris Penner's Comonads by Example talk (2/4)
 -- Monadic Party
 
+import Control.Arrow             ( first )
 import Control.Comonad           ( extend
                                  , extract
                                  )
@@ -12,6 +20,16 @@ import Control.Comonad.MemoStore ( Store
                                  , store
                                  )
 import Data.Bool                 ( bool )
+import Data.MemoTrie             ( (:->:)
+                                 , HasTrie
+                                 , Reg
+                                 , enumerate
+                                 , enumerateGeneric
+                                 , trie
+                                 , trieGeneric
+                                 , untrie
+                                 , untrieGeneric
+                                 )
 import Data.Monoid               ( Sum( Sum )
                                  , getSum
                                  )
@@ -34,6 +52,27 @@ startingGrid = store checkAlive (0, 0)
       $ blinker `at` (-3, -3)
       ++ glider `at` (2, 0)
 
+-- instance HasTrie (Sum Int) where
+--   newtype Sum Int :->: a = IntTrie (Word :->: a)
+
+--   enumerate :: forall b. (Sum Int :->: b) -> [(Sum Int, b)]
+--   enumerate (IntTrie t) = enum' fromIntegral t
+
+--   trie :: forall b. (Sum Int -> b) -> Sum Int :->: b
+--   trie f = IntTrie (trie (f . fromIntegral))
+
+--   untrie :: forall b. (Sum Int :->: b) -> Sum Int -> b
+--   untrie (IntTrie t) n = untrie t (fromIntegral . getSum $ n)
+
+-- enum' :: (HasTrie a) => (a -> a') -> (a :->: b) -> [(a', b)]
+-- enum' f = (fmap . first) f . enumerate
+
+
+instance HasTrie (Sum Int) where
+  newtype (Sum Int :->: b) = SumIntTrie { unSumIntTrie :: Reg (Sum Int) :->: b }
+  trie = trieGeneric SumIntTrie
+  untrie = untrieGeneric unSumIntTrie
+  enumerate = enumerateGeneric unSumIntTrie
 
 step :: Grid -> Grid
 step = extend checkCellAlive
