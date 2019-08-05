@@ -10,33 +10,33 @@ module Penner where
 -- From Chris Penner's Comonads by Example talk (2/4)
 -- Monadic Party
 
-import Control.Arrow             ( first )
-import Control.Comonad           ( extend
-                                 , extract
-                                 )
-import Control.Comonad.MemoStore ( Store
-                                 , experiment
-                                 , peek
-                                 , store
-                                 )
-import Data.Bool                 ( bool )
-import Data.MemoTrie             ( (:->:)
-                                 , HasTrie
-                                 , Reg
-                                 , enumerate
-                                 , enumerateGeneric
-                                 , trie
-                                 , trieGeneric
-                                 , untrie
-                                 , untrieGeneric
-                                 )
-import Data.Monoid               ( Sum( Sum )
-                                 , getSum
-                                 )
-import Data.Set                  ( Set
-                                 , fromList
-                                 , member
-                                 )
+import Control.Arrow              ( first )
+import Control.Comonad            ( extend
+                                  , extract
+                                  )
+import Control.Comonad.MemoStore2 ( Store
+                                  , experiment
+                                  , peek
+                                  , store
+                                  )
+import Data.Bool                  ( bool )
+import Data.MemoTrie              ( (:->:)
+                                  , HasTrie
+                                  , Reg
+                                  , enumerate
+                                  , enumerateGeneric
+                                  , trie
+                                  , trieGeneric
+                                  , untrie
+                                  , untrieGeneric
+                                  )
+import Data.Monoid                ( Sum( Sum )
+                                  , getSum
+                                  )
+import Data.Set                   ( Set
+                                  , fromList
+                                  , member
+                                  )
 
 type Grid  = Store Coord Bool
 type Coord = (Sum Int, Sum Int)
