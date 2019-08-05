@@ -3,21 +3,22 @@ module Penner where
 -- From Chris Penner's Comonads by Example talk (2/4)
 -- Monadic Party
 
-import Control.Comonad.Store ( Store
-                             , experiment
-                             , extend
-                             , extract
-                             , peek
-                             , store
-                             )
-import Data.Bool             ( bool )
-import Data.Monoid           ( Sum( Sum )
-                             , getSum
-                             )
-import Data.Set              ( Set
-                             , fromList
-                             , member
-                             )
+import Control.Comonad           ( extend
+                                 , extract
+                                 )
+import Control.Comonad.MemoStore ( Store
+                                 , experiment
+                                 , peek
+                                 , store
+                                 )
+import Data.Bool                 ( bool )
+import Data.Monoid               ( Sum( Sum )
+                                 , getSum
+                                 )
+import Data.Set                  ( Set
+                                 , fromList
+                                 , member
+                                 )
 
 type Grid  = Store Coord Bool
 type Coord = (Sum Int, Sum Int)
