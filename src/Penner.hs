@@ -29,7 +29,10 @@ startingGrid = store checkAlive (0, 0)
     checkAlive coord = member coord livingCells
 
     livingCells :: Set Coord
-    livingCells = fromList $ blinker `at` (2, 2)
+    livingCells = fromList
+      $ blinker `at` (-3, -3)
+      ++ glider `at` (2, 0)
+
 
 step :: Grid -> Grid
 step = extend checkCellAlive
@@ -51,21 +54,32 @@ neighborLocations location = mappend location <$>
   ]
 
 at :: [Coord] -> Coord -> [Coord]
-coords `at` origin = map (<> origin) coords
+coords `at` origin = map (origin <>) coords
 
 drawGrid :: Int -> Grid -> String
-drawGrid size g = unlines $ do
+drawGrid size g = (++ divider) . unlines $ do
   x <- [-size..size-1]
   pure $ do
     y <- [-size..size-1]
     pure . bool '.' '#' $ peek (Sum x, Sum y) g
+  where
+    divider = replicate (size * 2) '=' ++ "\n"
 
 glider, blinker, beacon :: [Coord]
 glider  = [(1, 0), (2, 1), (0, 2), (1, 2), (2, 2)]
 blinker = [(0, 0), (1, 0), (2, 0)]
 beacon  = [(0, 0), (1, 0), (0, 1), (3, 2), (2, 3), (3, 3)]
 
--- import Data.List.Split       ( chunksOf )
+run :: Int -> IO ()
+run n = putStr
+  . unlines
+  . init
+  . concatMap (lines . drawGrid 5)
+  . take n
+  . iterate step
+  $ startingGrid
+
+-- import Data.List.Split ( chunksOf )
 -- drawGrid :: Int -> Grid -> String
 -- drawGrid size = unlines
 --   . map concat
