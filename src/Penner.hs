@@ -3,17 +3,21 @@ module Penner where
 -- From Chris Penner's Comonads by Example talk (2/4)
 -- Monadic Party
 
-import           Control.Comonad.Store      ( Store
-                                            , experiment
-                                            , extend
-                                            , extract
-                                            , peek
-                                            , store
-                                            )
-import           Data.Bool                  ( bool )
-import           Data.List.Split            ( chunksOf )
-import           Data.Monoid
-import qualified Data.Set              as S
+import Control.Comonad.Store ( Store
+                             , experiment
+                             , extend
+                             , extract
+                             , peek
+                             , store
+                             )
+import Data.Bool             ( bool )
+import Data.Monoid           ( Sum( Sum )
+                             , getSum
+                             )
+import Data.Set              ( Set
+                             , fromList
+                             , member
+                             )
 
 type Grid  = Store Coord Bool
 type Coord = (Sum Int, Sum Int)
@@ -21,11 +25,11 @@ type Coord = (Sum Int, Sum Int)
 startingGrid :: Grid
 startingGrid = store checkAlive (0, 0)
   where
-    checkAlive :: (Sum Int, Sum Int) -> Bool
-    checkAlive coord = S.member coord livingCells
+    checkAlive :: Coord -> Bool
+    checkAlive coord = member coord livingCells
 
-    livingCells :: S.Set (Sum Int, Sum Int)
-    livingCells = S.fromList (blinker `at` (2, 2))
+    livingCells :: Set Coord
+    livingCells = fromList $ blinker `at` (2, 2)
 
 step :: Grid -> Grid
 step = extend checkCellAlive
@@ -61,6 +65,7 @@ glider  = [(1, 0), (2, 1), (0, 2), (1, 2), (2, 2)]
 blinker = [(0, 0), (1, 0), (2, 0)]
 beacon  = [(0, 0), (1, 0), (0, 1), (3, 2), (2, 3), (3, 3)]
 
+-- import Data.List.Split       ( chunksOf )
 -- drawGrid :: Int -> Grid -> String
 -- drawGrid size = unlines
 --   . map concat
